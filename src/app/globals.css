@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+:root {
+  /* Paleta base inspirada en Solo Leveling */
+  --bg-main: #13161c;
+  --bg-card: #20222b;
+  --text-main: #e8eaff;
+  --text-secondary: #92c0ff;
+  --accent-blue: #39aaff;
+  --glow-blue: 0 0 16px #39aaff, 0 0 32px #1e355a;
+  --shadow-strong: 0 0 32px 0 #0c1337cc, 0 2px 8px 0 #00000077;
+
+  /* Gradiente para botones o fondos */
+  --gradient-1: linear-gradient(90deg, #182040 0%, #28385a 100%);
+  --gradient-glow: linear-gradient(100deg, #2e3f60 0%, #263054 100%);
+  --error: #e94444;
+  --success: #44e97c;
+
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: var(--text-main);
+  background-color: var(--bg-main);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* El wrapper móvil ya tiene fondo blanco. Aquí aseguramos fondo general */
+html, body, #root {
+  height: 100%;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--bg-main);
+}
+
+/* Links */
+a {
+  font-weight: 500;
+  color: var(--accent-blue);
+  text-decoration: none;
+  text-shadow: 0 0 6px #39aaff77;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #fff;
+  text-shadow: 0 0 14px #39aaffcc, 0 0 24px #39aaff88;
+}
+
+/* Cabeceras */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-main);
+  text-shadow: 0 0 14px #0008;
+  letter-spacing: 0.02em;
+  margin: 0.5em 0;
+}
+
+h1 {
+  font-size: 2.5em;
+  font-weight: 700;
+  text-shadow: 0 0 32px #1e355a88, 0 0 8px #39aaff66;
+}
+
+h2 {
+  font-size: 1.7em;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+p, span, label {
+  color: var(--text-secondary);
+  font-size: 1em;
+}
+
+/* Botones efecto neón */
+button {
+  border-radius: 10px;
+  border: none;
+  padding: 0.75em 1.4em;
+  font-size: 1.06em;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--gradient-1);
+  color: var(--text-main);
+  box-shadow: var(--shadow-strong);
+  text-shadow: 0 0 10px #1e355a99;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.22s, color 0.18s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+button:hover, button:focus {
+  background: var(--gradient-glow);
+  color: #fff;
+  box-shadow: 0 0 18px #39aaffcc, 0 0 64px #1e355a77, var(--shadow-strong);
+}
+
+button:active {
+  filter: brightness(1.14);
+}
+
+/* Input fields */
+input, select, textarea {
+  background: #212534;
+  color: var(--text-main);
+  border: 1.5px solid #28385a;
+  border-radius: 7px;
+  padding: 0.7em 1em;
+  margin: 0.4em 0;
+  font-size: 1em;
+  box-shadow: 0 0 6px #1e355a33;
+  outline: none;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+input:focus, select:focus, textarea:focus {
+  border: 1.5px solid var(--accent-blue);
+  box-shadow: 0 0 18px #39aaff44;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  box-shadow: var(--shadow-strong);
+  border-radius: 16px;
+  padding: 1.1em 1.4em;
+  margin: 1em 0;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #212534;
+}
+::-webkit-scrollbar-thumb {
+  background: #28385a;
+  border-radius: 6px;
+}
+
+/* Animación sutil para fondos o elementos mágicos */
+@keyframes blueGlow {
+  0% { box-shadow: 0 0 20px 3px #39aaff44; }
+  50% { box-shadow: 0 0 34px 6px #39aaffbb; }
+  100% { box-shadow: 0 0 20px 3px #39aaff44; }
+}
+
+.glow {
+  animation: blueGlow 2.7s infinite;
+}
+
+/* Para breakpoints especiales (pantallas extra pequeñas o muy altas) */
+@media (max-width: 350px) {
+  :root {
+    font-size: 12px;
+  }
+}
+@media (max-height: 600px) {
+  :root {
+    font-size: 12px;
+  }
+}
