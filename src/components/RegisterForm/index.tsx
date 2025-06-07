@@ -3,44 +3,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { v4 as uuidv4 } from 'uuid';
-import Image from 'next/image';
-
-
-
-const DownloadButtons = () => (
-  <div className="grid grid-cols-2 gap-x-3 pt-4">
-    <a
-      href="https://apps.apple.com/no/app/worldcoin-claim-send/id1560859847"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <div className="relative aspect-[3/1] cursor-pointer hover:opacity-70">
-        <Image
-          src="https://world.org/images/apple.svg"
-          alt="Descargar en App Store"
-          fill
-          className="object-contain"
-        />
-      </div>
-    </a>
-
-    <a
-      href="https://play.google.com/store/apps/details?id=com.worldcoin"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <div className="relative aspect-[3/1] cursor-pointer hover:opacity-70">
-        <Image
-          src="https://world.org/images/googledownload.svg"
-          alt="Descargar en Google Play"
-          fill
-          className="object-contain"
-        />
-      </div>
-    </a>
-  </div>
-);
-
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -50,21 +12,25 @@ export default function RegisterForm() {
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
   const [isWalletDisabled, setIsWalletDisabled] = useState(false);
-  const [isUsernameDisabled, setIsUsernameDisabled] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAutoCompleteMode, setIsAutoCompleteMode] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (session?.user?.email) {
       setEmail(session.user.email);
     }
+
     if (session?.user?.walletAddress) {
       setWalletAddress(session.user.walletAddress);
-      setUsername(session.user.username);
+      setIsWalletDisabled(false);
+      setIsAutoCompleteMode(true);
     } else {
       setIsWalletDisabled(true);
-      setIsUsernameDisabled(true);
+    }
+
+    if (session?.user?.name) {
+      setUsername(session.user.name);
     }
 
     console.log('🔐 Sesión activa:', session);
@@ -72,6 +38,8 @@ export default function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const uuid = uuidv4();
 
     const res = await fetch('/api/user/register', {
@@ -88,7 +56,7 @@ export default function RegisterForm() {
     if (res.ok) {
       setShowSuccessPopup(true);
       setTimeout(() => {
-        router.push('/home');
+        router.push('/(protected)/home');
       }, 2000);
     } else {
       console.error('❌ Error registrando usuario');
@@ -97,9 +65,8 @@ export default function RegisterForm() {
     setIsSubmitting(false);
   };
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0e0e16] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0e0e16] p-4 relative">
       <div className="w-full max-w-md">
         {/* Banner Promocional */}
         <div className="bg-gradient-to-r from-purple-700 to-indigo-600 text-white rounded-xl p-5 mb-6 shadow-lg text-center">
@@ -111,13 +78,16 @@ export default function RegisterForm() {
             📲 Descarga la World App y obtén 100 tokens Realm extra
           </p>
         </div>
-        <DownloadButtons />
-        <p> </p>
+
         {/* Formulario */}
         <form
           onSubmit={handleSubmit}
           className="bg-[#1a1a2e] p-8 rounded-xl shadow-lg"
         >
+          <h2 className="text-xl font-bold text-white mb-6 text-center">
+            Registro de Usuario
+          </h2>
+
           {/* Email */}
           <div className="mb-4">
             <label className="block text-white mb-1">Email</label>
@@ -134,9 +104,14 @@ export default function RegisterForm() {
             <label className="block text-white mb-1">Nombre de Usuario</label>
             <input
               type="text"
-              className="w-full p-2 rounded-lg bg-[#2a2a40] text-white border border-[#3a3a55] focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full p-2 rounded-lg bg-[#2a2a40] text-white border ${
+                isAutoCompleteMode
+                  ? 'cursor-not-allowed opacity-70 border-[#3a3a55]'
+                  : 'border-[#3a3a55] focus:outline-none focus:ring-2 focus:ring-purple-500'
+              }`}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={isAutoCompleteMode}
               required
             />
           </div>
@@ -147,13 +122,13 @@ export default function RegisterForm() {
             <input
               type="text"
               className={`w-full p-2 rounded-lg bg-[#2a2a40] text-white border ${
-                isWalletDisabled
+                isWalletDisabled || isAutoCompleteMode
                   ? 'cursor-not-allowed opacity-70 border-[#3a3a55]'
                   : 'border-[#3a3a55] focus:outline-none focus:ring-2 focus:ring-purple-500'
               }`}
               value={walletAddress || ''}
               onChange={(e) => setWalletAddress(e.target.value)}
-              disabled={isWalletDisabled}
+              disabled={isWalletDisabled || isAutoCompleteMode}
             />
           </div>
 
