@@ -8,7 +8,8 @@ import HomeWrapper from '@/components/HomeWrapper';
 
 export default async function HomePage() {
   const session = await auth();
-
+  console.log('Sesión:', session); // 👈 imprime
+  
   const email = session?.user?.email;
   const walletAddress = session?.user?.walletAddress;
 
@@ -17,7 +18,7 @@ export default async function HomePage() {
       redirect('/');
     }
   }
-  
+
   await connectMongo();
 
   const user =
