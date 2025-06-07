@@ -1,39 +1,33 @@
 'use client';
-import React, { useState } from 'react';
-import { AuthButton } from '../components/AuthButton';
-import { SplashScreen } from '@/components/SplashScreen';
-import { useRouter } from 'next/navigation';
 
-export default function Home() {
-  const router = useRouter();
-  const [showSplash, setShowSplash] = useState(true);
+import { useMiniKit } from '@worldcoin/minikit-js/minikit-provider';
+import { useEffect, useState } from 'react';
+import { AuthButton } from '@/components/AuthButton';
+import { GoogleButton } from '@/components/GoogleButton'; // reemplázalo con el nombre correcto si es diferente
 
-  const handleStuck = () => {
-    router.push('/login');
-  };
+export default function Page() {
+  const { isInstalled } = useMiniKit();
+  const [showWallet, setShowWallet] = useState<boolean | null>(null);
 
-  const handleSplashFinish = () => {
-    setShowSplash(false);
-  };
+  useEffect(() => {
+    if (typeof isInstalled === 'boolean') {
+      setShowWallet(isInstalled);
+    }
+  }, [isInstalled]);
 
   return (
-    <>
-      {showSplash ? (
-        <SplashScreen logoPath="/splash/start.png" onFinish={handleSplashFinish} />
-      ) : (
-        <div
-          className="w-full h-full bg-center bg-cover relative"
-          style={{ backgroundImage: "url('/login/backgroundlogin.png')" }}
-        >
-          {/* Overlay (opcional) */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(13,20,34,0.7)] to-[rgba(23,38,58,0.88)] z-0" />
+    <main className="min-h-screen flex items-center justify-center bg-[#0e0e16] p-4">
+      <div className="w-full max-w-md text-center">
+        <h1 className="text-white text-2xl font-bold mb-4">Inicia sesión</h1>
 
-          {/* Contenido centrado */}
-          <div className="relative z-10 flex flex-col items-center justify-center h-full">
-            <AuthButton onStuck={handleStuck} />
-          </div>
-        </div>
-      )}
-    </>
+        {showWallet === null && (
+          <p className="text-white animate-pulse">inicio de sesión...</p>
+        )}
+
+        {showWallet === true && <AuthButton />}
+
+        {showWallet === false && <GoogleButton />}
+      </div>
+    </main>
   );
 }

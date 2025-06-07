@@ -44,18 +44,6 @@ export const AuthButton = ({ onStuck }: AuthButtonProps) => {
     authenticate();
   }, [isInstalled, isPending]);
 
-  // 🛑 Aquí va la corrección: timeout solo si sigue pendiente y no autenticado
-  useEffect(() => {
-    if (!isPending || isAuthenticated) return;
-
-    const timeout = setTimeout(() => {
-      console.warn('⏳ Tiempo de espera agotado. Ejecutando onStuck...');
-      if (!isAuthenticated) onStuck?.();
-    }, 15000);
-
-    return () => clearTimeout(timeout);
-  }, [isPending, isAuthenticated, onStuck]);
-
   return (
     <LiveFeedback
       label={{

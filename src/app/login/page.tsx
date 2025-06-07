@@ -14,17 +14,6 @@ export default function SignInPage() {
     await signIn('google', { callbackUrl: '/home' });
   };
 
-  if (status === 'loading' || loading) {
-    return (
-      <div className="fixed inset-0 bg-solo-dark flex items-center justify-center z-50">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-solo-purple border-t-transparent rounded-full mb-4 mx-auto"></div>
-          <p className="text-white text-xl font-semibold">🔄 Loading New Login...</p>
-          <p className="text-gray-400 text-sm mt-2">Please wait a moment...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
