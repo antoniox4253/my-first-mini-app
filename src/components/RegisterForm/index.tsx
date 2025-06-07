@@ -54,11 +54,15 @@ export default function RegisterForm() {
   const [popupMessage, setPopupMessage] = useState('');
   const [popupType, setPopupType] = useState<'success' | 'error' | null>(null);
 
+  /* -------------------------------------------------------------
+   * Cargar datos desde la sesión (Google o World App)
+   * ----------------------------------------------------------- */
   useEffect(() => {
     if (!session) return;
 
     const user = session.user;
     if (user?.walletAddress) {
+      // Caso: sesión con wallet
       setEmail(user.email || '');
       setUsername(user.username);
       setWalletAddress(user.walletAddress);
@@ -67,6 +71,7 @@ export default function RegisterForm() {
       setIsUsernameDisabled(true);
       setIsEmailDisabled(false);
     } else if (user?.email) {
+      // Caso: sesión con email
       setEmail(user.email);
       setWalletAddress('');
 
@@ -76,6 +81,9 @@ export default function RegisterForm() {
     }
   }, [session]);
 
+  /* -------------------------------------------------------------
+   * Enviar formulario
+   * ----------------------------------------------------------- */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -96,15 +104,25 @@ export default function RegisterForm() {
     });
 
     if (res.ok) {
-      setPopupMessage('¡Registro exitoso! Serás redirigido...');
+      setPopupMessage('¡Registro exitoso!');
       setPopupType('success');
-      setTimeout(() => router.push('/home'), 2000);
     } else {
       setPopupMessage('Hubo un problema al registrar. Intenta de nuevo.');
       setPopupType('error');
     }
 
     setIsSubmitting(false);
+  };
+
+  /* -------------------------------------------------------------
+   * Manejar clic en OK del popup
+   * ----------------------------------------------------------- */
+  const handleOk = () => {
+    if (popupType === 'success') {
+      router.push('/home');
+    }
+    setPopupMessage('');
+    setPopupType(null);
   };
 
   return (
@@ -195,19 +213,17 @@ export default function RegisterForm() {
             </h2>
             <p className="mb-4">{popupMessage}</p>
 
-            {popupType === 'error' && (
-              <div className="text-right">
-                <button
-                  onClick={() => {
-                    setPopupMessage('');
-                    setPopupType(null);
-                  }}
-                  className="px-4 py-2 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-200 transition"
-                >
-                  OK
-                </button>
-              </div>
-            )}
+            {/* Botón OK para ambos casos */}
+            <div className="text-right">
+              <button
+                onClick={handleOk}
+                className={`px-4 py-2 bg-white ${
+                  popupType === 'success' ? 'text-green-600' : 'text-red-600'
+                } font-bold rounded-lg hover:bg-gray-200 transition`}
+              >
+                OK
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1,27 +1,54 @@
+import { NextResponse } from 'next/server';
 import { connectMongo } from '@/providers/mongo';
 import { User } from '@/models/User';
-import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   await connectMongo();
-  const { uuid, email, walletAddress, username } = await req.json();
+  const { email, username, walletAddress } = await req.json();
 
-  if (!uuid || !email || !username) {
-    return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 });
+  if (!username) {
+    return NextResponse.json({ error: 'Falta nombre de usuario' }, { status: 400 });
   }
 
-  const existingEmail = await User.findOne({ email });
-  if (existingEmail) {
-    return NextResponse.json({ error: 'Correo ya registrado' }, { status: 409 });
+  // Buscar usuario existente
+  let user = null;
+
+  if (walletAddress) {
+    user = await User.findOne({ walletAddress });
   }
 
-  const existingWallet = walletAddress ? await User.findOne({ walletAddress }) : null;
-  if (existingWallet) {
-    return NextResponse.json({ error: 'Wallet ya registrada' }, { status: 409 });
+  if (!user && email) {
+    user = await User.findOne({ email });
   }
 
-  const user = new User({ uuid, email, walletAddress, username });
-  await user.save();
+  // Si se encontró un usuario
+  if (user) {
+    // Si es un usuario con email registrado y sin wallet
+    if (email && user.email === email && !user.walletAddress && walletAddress) {
+      user.walletAddress = walletAddress;
+      user.username = username;
+      await user.save();
+      return NextResponse.json({ success: true, message: 'Usuario actualizado con wallet' });
+    }
 
-  return NextResponse.json({ success: true, user });
+    // Si es un usuario con wallet registrado y sin email
+    if (walletAddress && user.walletAddress === walletAddress && !user.email && email) {
+      user.email = email;
+      user.username = username;
+      await user.save();
+      return NextResponse.json({ success: true, message: 'Usuario actualizado con email' });
+    }
+
+    // Si ya existe un usuario con email y wallet → duplicado
+    return NextResponse.json(
+      { error: 'Ya existe un usuario registrado con este correo o wallet' },
+      { status: 400 }
+    );
+  }
+
+  // Crear nuevo usuario
+  const newUser = new User({ email, username, walletAddress });
+  await newUser.save();
+
+  return NextResponse.json({ success: true, message: 'Usuario creado' });
 }
