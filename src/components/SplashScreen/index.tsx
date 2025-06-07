@@ -1,8 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
-import Image from 'next/image'
-
 
 interface SplashScreenProps {
   logoPath: string;
@@ -50,7 +48,7 @@ export const SplashScreen: FC<SplashScreenProps> = ({ logoPath, onFinish }) => {
 
   return (
     <div style={containerStyle}>
-      <Image  src={logoPath} alt="Logo" style={imgStyle} />
+      <img src={logoPath} alt="Logo" style={imgStyle} />
     </div>
   );
 };

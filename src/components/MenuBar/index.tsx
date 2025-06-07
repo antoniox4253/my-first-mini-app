@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image'
 
 interface MenuBarProps {
   selected: string;
@@ -52,7 +51,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ selected, onSelect }) => (
           cursor: 'pointer',
         }}
       >
-        <Image 
+        <img
           src={item.icon}
           alt={item.label}
           style={{

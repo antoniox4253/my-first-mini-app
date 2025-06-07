@@ -2,7 +2,6 @@
 
 import { signIn, useSession } from 'next-auth/react';
 import { useState } from 'react';
-import Image from 'next/image'
 
 export default function SignInPage() {
   const { status } = useSession();
@@ -39,7 +38,7 @@ export default function SignInPage() {
           onClick={handleGoogleSignIn}
           className="flex flex-col items-center justify-center w-28 h-28 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm shadow-lg transition-all"
         >
-          <Image  src="/login/google.png" alt="Google" className="w-6 h-6 mb-1" />
+          <img src="/login/google.png" alt="Google" className="w-6 h-6 mb-1" />
           Google
         </button>
       </div>

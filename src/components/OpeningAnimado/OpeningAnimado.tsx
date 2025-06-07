@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image'
 
 interface OpeningAnimadoProps {
   onFinish: () => void;
@@ -32,7 +31,7 @@ const OpeningAnimado: React.FC<OpeningAnimadoProps> = ({ onFinish }) => {
       alignItems: 'center',
       flexDirection: 'column'
     }}>
-      <Image 
+      <img
         src={frames[frame]}
         alt={`Opening frame ${frame + 1}`}
         style={{

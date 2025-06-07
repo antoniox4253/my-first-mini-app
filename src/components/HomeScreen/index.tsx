@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useMissionSlots from '@/hooks/useMissionSlots';
 import PortalAnimado from '@/components/PortalAnimado';
-import Image from 'next/image'
 
 interface MissionSlot {
   id: number;
@@ -160,7 +159,7 @@ export default function HomeScreen({ username, uuid, email }: HomeScreenProps) {
               }}
             >
               {slot.ocupado && (
-                <Image 
+                <img
                   src={imgEnMision}
                   alt="En misión"
                   style={{
