@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Marble } from '@worldcoin/mini-apps-ui-kit-react';
+import Image from 'next/image';
 
 interface TopBarProps {
   username?: string;
@@ -41,7 +42,7 @@ const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, onMenuClic
 
       {/* 🟢 Lado derecho: íconos */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <img
+        <Image
           src="/top/tuerca.png"
           alt="settings"
           style={{
@@ -52,7 +53,7 @@ const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, onMenuClic
           }}
           onClick={() => router.push('/settings')}
         />
-        <img
+        <Image
           src="/top/wallet.png"
           alt="wallet"
           style={{
