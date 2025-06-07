@@ -8,15 +8,14 @@ export default function Page() {
   const [isWalletAvailable, setIsWalletAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Esperar que el MiniKit esté disponible en window
     const checkMiniKit = async () => {
       try {
-        const result =
-          typeof window !== 'undefined' &&
-          typeof (window as any).MiniKit !== 'undefined' &&
-          (await (window as any).MiniKit?.isInstalled?.());
-
-        setIsWalletAvailable(result === true);
+        if (typeof window !== 'undefined' && typeof window.MiniKit !== 'undefined') {
+          const result = await window.MiniKit?.isInstalled?.();
+          setIsWalletAvailable(result === true);
+        } else {
+          setIsWalletAvailable(false);
+        }
       } catch (error) {
         console.warn('MiniKit no disponible o falló:', error);
         setIsWalletAvailable(false);
