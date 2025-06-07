@@ -10,17 +10,24 @@ export default function Page() {
   useEffect(() => {
     const checkMiniKit = async () => {
       try {
-        // Esperar para asegurar que MiniKit esté disponible (en World App puede tardar en cargarse)
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 300)); // espera para cargar MiniKit
 
-        if (typeof window !== 'undefined' && typeof window.MiniKit !== 'undefined') {
-          const result = await window.MiniKit?.isInstalled?.();
-          setIsWalletAvailable(result === true);
+        const isWorldApp =
+          typeof window !== 'undefined' &&
+          navigator.userAgent.toLowerCase().includes('worldcoin');
+
+        const miniKitInstalled =
+          typeof window !== 'undefined' &&
+          typeof window.MiniKit !== 'undefined' &&
+          (await window.MiniKit.isInstalled?.());
+
+        if (isWorldApp && miniKitInstalled) {
+          setIsWalletAvailable(true);
         } else {
           setIsWalletAvailable(false);
         }
       } catch (error) {
-        console.warn('MiniKit no disponible o falló:', error);
+        console.warn('Error verificando MiniKit:', error);
         setIsWalletAvailable(false);
       }
     };
@@ -31,14 +38,20 @@ export default function Page() {
   return (
     <main className="w-screen h-screen flex items-center justify-center bg-[#0e0e16] px-4">
       <div className="w-full max-w-md text-center flex flex-col items-center justify-center">
-        <h1 className="text-white text-2xl font-bold mb-6">Inicia sesión</h1>
+        {/* Solo muestra el título si NO estás en World App */}
+        {isWalletAvailable === false && (
+          <h1 className="text-white text-2xl font-bold mb-6">Inicia sesión</h1>
+        )}
 
+        {/* Estado intermedio */}
         {isWalletAvailable === null && (
           <p className="text-white animate-pulse">Detectando método de inicio de sesión...</p>
         )}
 
+        {/* Dentro de World App y MiniKit listo */}
         {isWalletAvailable === true && <AuthButton />}
 
+        {/* En navegador u otra app */}
         {isWalletAvailable === false && <GoogleButton />}
       </div>
     </main>
