@@ -59,16 +59,14 @@ export default function RegisterForm() {
 
     const user = session.user;
     if (user?.walletAddress) {
-      // Se autenticó con World App
       setEmail(user.email || '');
       setUsername(user.username);
       setWalletAddress(user.walletAddress);
 
       setIsWalletDisabled(true);
       setIsUsernameDisabled(true);
-      setIsEmailDisabled(false); // puedes editar tu correo
+      setIsEmailDisabled(false);
     } else if (user?.email) {
-      // Se autenticó con Google
       setEmail(user.email);
       setWalletAddress('');
 
@@ -98,11 +96,11 @@ export default function RegisterForm() {
     });
 
     if (res.ok) {
-      setPopupMessage('✅ ¡Registro exitoso! Redirigiendo...');
+      setPopupMessage('¡Registro exitoso! Serás redirigido...');
       setPopupType('success');
       setTimeout(() => router.push('/home'), 2000);
     } else {
-      setPopupMessage('❌ Error al registrar. Intenta de nuevo.');
+      setPopupMessage('Hubo un problema al registrar. Intenta de nuevo.');
       setPopupType('error');
     }
 
@@ -186,12 +184,31 @@ export default function RegisterForm() {
 
       {/* Popup */}
       {popupMessage && popupType && (
-        <div
-          className={`absolute top-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl shadow-lg animate-fadeIn z-50 ${
-            popupType === 'success' ? 'bg-green-600' : 'bg-red-600'
-          } text-white`}
-        >
-          {popupMessage}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div
+            className={`w-full max-w-sm rounded-xl px-6 py-5 shadow-lg text-white relative ${
+              popupType === 'success' ? 'bg-green-600' : 'bg-red-600'
+            }`}
+          >
+            <h2 className="text-lg font-bold mb-2">
+              {popupType === 'success' ? '✅ Registro Exitoso' : '❌ Error al Registrar'}
+            </h2>
+            <p className="mb-4">{popupMessage}</p>
+
+            {popupType === 'error' && (
+              <div className="text-right">
+                <button
+                  onClick={() => {
+                    setPopupMessage('');
+                    setPopupType(null);
+                  }}
+                  className="px-4 py-2 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-200 transition"
+                >
+                  OK
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
