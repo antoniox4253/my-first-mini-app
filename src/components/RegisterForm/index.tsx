@@ -93,7 +93,7 @@ export default function RegisterForm() {
         uuid,
         email,
         username,
-        walletAddress: isWalletDisabled ? null : walletAddress,
+        walletAddress: walletAddress || null,
       }),
     });
 
