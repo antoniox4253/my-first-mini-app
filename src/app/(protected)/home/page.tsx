@@ -12,10 +12,12 @@ export default async function HomePage() {
   const email = session?.user?.email;
   const walletAddress = session?.user?.walletAddress;
 
-  if (!email && !walletAddress) {
-    redirect('/');
+  if (!walletAddress) {
+    if (!email) {
+      redirect('/');
+    }
   }
-
+  
   await connectMongo();
 
   const user =
