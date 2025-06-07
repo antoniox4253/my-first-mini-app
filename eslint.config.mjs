@@ -18,6 +18,9 @@ const eslintConfig = [
     rules: {
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
+
+      // 👇 Aquí desactivamos la regla de variables no usadas
+      '@typescript-eslint/no-unused-vars': 'warn',
     },
   },
 ];
