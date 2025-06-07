@@ -10,15 +10,10 @@ export default function Page() {
   useEffect(() => {
     const checkEnvironment = async () => {
       try {
-        // Esperar para permitir que MiniKit se exponga en World App
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
-        const miniKitAvailable =
-          typeof window !== 'undefined' &&
-          typeof window.MiniKit !== 'undefined' &&
-          typeof window.MiniKit.isInstalled === 'function';
-
-        const isInstalled = miniKitAvailable && (await window.MiniKit!.isInstalled!());
+        const isInstalled = await Promise.race([
+          window?.MiniKit?.isInstalled?.() ?? Promise.resolve(false),
+          new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 1000)),
+        ]);
 
         if (isInstalled) {
           setAuthMethod('wallet');
@@ -37,7 +32,6 @@ export default function Page() {
   return (
     <main className="w-screen h-screen flex items-center justify-center bg-[#0e0e16] px-4">
       <div className="w-full max-w-md text-center flex flex-col items-center justify-center min-h-full px-4 py-6">
-        {/* Título solo si se usará Google */}
         {authMethod === 'google' && (
           <h1 className="text-white text-2xl font-bold mb-6">Inicia sesión</h1>
         )}

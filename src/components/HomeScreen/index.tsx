@@ -152,7 +152,7 @@ export default function HomeScreen({ username, uuid, email }: HomeScreenProps) {
               style={{
                 position: 'relative',
                 width: portalWidth + 100,
-                left: 40,
+                left: -40,
                 height: portalHeight,
                 display: 'flex',
                 alignItems: 'flex-start',
