@@ -9,7 +9,7 @@ export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
 
   const handleStuck = () => {
-    router.push('/login');
+    router.push('/home');
   };
 
   const handleSplashFinish = () => {
