@@ -8,6 +8,8 @@ import HomeWrapper from '@/components/HomeWrapper';
 
 export default async function HomePage() {
   const session = await auth();
+  console.log('Sesión:', session); // 👈 imprime en consola del servidor
+
 
   const email = session?.user?.email;
   const walletAddress = session?.user?.walletAddress;
