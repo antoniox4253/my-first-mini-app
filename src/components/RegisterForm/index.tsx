@@ -5,8 +5,6 @@ import { useSession } from 'next-auth/react';
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
 
-
-
 const DownloadButtons = () => (
   <div className="grid grid-cols-2 gap-x-3 pt-4">
     <a
@@ -23,7 +21,6 @@ const DownloadButtons = () => (
         />
       </div>
     </a>
-
     <a
       href="https://play.google.com/store/apps/details?id=com.worldcoin"
       target="_blank"
@@ -41,7 +38,6 @@ const DownloadButtons = () => (
   </div>
 );
 
-
 export default function RegisterForm() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -49,29 +45,45 @@ export default function RegisterForm() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
-  const [isWalletDisabled, setIsWalletDisabled] = useState(false);
-  const [isUsernameDisabled, setIsUsernameDisabled] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
+  const [isUsernameDisabled, setIsUsernameDisabled] = useState(false);
+  const [isWalletDisabled, setIsWalletDisabled] = useState(false);
+  const [isEmailDisabled, setIsEmailDisabled] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState<'success' | 'error' | null>(null);
 
   useEffect(() => {
-    if (session?.user?.email) {
-      setEmail(session.user.email);
-    }
-    if (session?.user?.walletAddress) {
-      setWalletAddress(session.user.walletAddress);
-      setUsername(session.user.username);
-    } else {
+    if (!session) return;
+
+    const user = session.user;
+    if (user?.walletAddress) {
+      // Se autenticó con World App
+      setEmail(user.email || '');
+      setUsername(user.username);
+      setWalletAddress(user.walletAddress);
+
       setIsWalletDisabled(true);
       setIsUsernameDisabled(true);
-    }
+      setIsEmailDisabled(false); // puedes editar tu correo
+    } else if (user?.email) {
+      // Se autenticó con Google
+      setEmail(user.email);
+      setWalletAddress('');
 
-    console.log('🔐 Sesión activa:', session);
+      setIsWalletDisabled(true);
+      setIsUsernameDisabled(false);
+      setIsEmailDisabled(true);
+    }
   }, [session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setPopupMessage('');
+    setPopupType(null);
+
     const uuid = uuidv4();
 
     const res = await fetch('/api/user/register', {
@@ -86,46 +98,43 @@ export default function RegisterForm() {
     });
 
     if (res.ok) {
-      setShowSuccessPopup(true);
-      setTimeout(() => {
-        router.push('/home');
-      }, 2000);
+      setPopupMessage('✅ ¡Registro exitoso! Redirigiendo...');
+      setPopupType('success');
+      setTimeout(() => router.push('/home'), 2000);
     } else {
-      console.error('❌ Error registrando usuario');
+      setPopupMessage('❌ Error al registrar. Intenta de nuevo.');
+      setPopupType('error');
     }
 
     setIsSubmitting(false);
   };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0e0e16] p-4">
       <div className="w-full max-w-md">
-        {/* Banner Promocional */}
+        {/* Banner */}
         <div className="bg-gradient-to-r from-purple-700 to-indigo-600 text-white rounded-xl p-5 mb-6 shadow-lg text-center">
           <h1 className="text-2xl font-bold mb-2">🎉 Bienvenido a Realm of Valor</h1>
-          <p className="text-sm">
-            Es una mini app en el ecosistema de la World App con muchos beneficios.
-          </p>
+          <p className="text-sm">Mini app en World App con muchos beneficios.</p>
           <p className="mt-2 text-yellow-300 font-semibold">
             📲 Descarga la World App y obtén 100 tokens Realm extra
           </p>
         </div>
         <DownloadButtons />
-        <p> </p>
+
         {/* Formulario */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-[#1a1a2e] p-8 rounded-xl shadow-lg"
-        >
+        <form onSubmit={handleSubmit} className="bg-[#1a1a2e] p-8 rounded-xl shadow-lg mt-4">
           {/* Email */}
           <div className="mb-4">
             <label className="block text-white mb-1">Email</label>
             <input
               type="email"
-              className="w-full p-2 rounded-lg bg-[#2a2a40] text-white border border-[#3a3a55] cursor-not-allowed opacity-70"
+              className={`w-full p-2 rounded-lg bg-[#2a2a40] text-white border border-[#3a3a55] ${
+                isEmailDisabled ? 'cursor-not-allowed opacity-70' : ''
+              }`}
               value={email}
-              disabled
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isEmailDisabled}
             />
           </div>
 
@@ -134,9 +143,14 @@ export default function RegisterForm() {
             <label className="block text-white mb-1">Nombre de Usuario</label>
             <input
               type="text"
-              className="w-full p-2 rounded-lg bg-[#2a2a40] text-white border border-[#3a3a55] focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full p-2 rounded-lg bg-[#2a2a40] text-white border border-[#3a3a55] ${
+                isUsernameDisabled
+                  ? 'cursor-not-allowed opacity-70'
+                  : 'focus:outline-none focus:ring-2 focus:ring-purple-500'
+              }`}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={isUsernameDisabled}
               required
             />
           </div>
@@ -151,7 +165,7 @@ export default function RegisterForm() {
                   ? 'cursor-not-allowed opacity-70 border-[#3a3a55]'
                   : 'border-[#3a3a55] focus:outline-none focus:ring-2 focus:ring-purple-500'
               }`}
-              value={walletAddress || ''}
+              value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
               disabled={isWalletDisabled}
             />
@@ -170,10 +184,14 @@ export default function RegisterForm() {
         </form>
       </div>
 
-      {/* Popup Éxito */}
-      {showSuccessPopup && (
-        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg animate-pulse z-50">
-          ✅ ¡Registro exitoso! Redirigiendo...
+      {/* Popup */}
+      {popupMessage && popupType && (
+        <div
+          className={`absolute top-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl shadow-lg animate-fadeIn z-50 ${
+            popupType === 'success' ? 'bg-green-600' : 'bg-red-600'
+          } text-white`}
+        >
+          {popupMessage}
         </div>
       )}
     </div>
