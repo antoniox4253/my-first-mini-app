@@ -4,7 +4,8 @@ import { User } from '@/models/User';
 
 export async function POST(req: Request) {
   await connectMongo();
-  const { email, username, walletAddress } = await req.json();
+  const { uuid, email, username, walletAddress } = await req.json();
+
 
   if (!username) {
     return NextResponse.json({ error: 'Falta nombre de usuario' }, { status: 400 });
@@ -47,7 +48,7 @@ export async function POST(req: Request) {
   }
 
   // Crear nuevo usuario
-  const newUser = new User({ email, username, walletAddress });
+  const newUser = new User({ uuid, email, username, walletAddress });
   await newUser.save();
 
   return NextResponse.json({ success: true, message: 'Usuario creado' });
