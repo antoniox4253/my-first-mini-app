@@ -10,7 +10,8 @@ export default function Page() {
   useEffect(() => {
     const checkMiniKit = async () => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 300)); // espera para cargar MiniKit
+        // Espera breve para que MiniKit se exponga (World App puede demorar)
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         const isWorldApp =
           typeof window !== 'undefined' &&
@@ -21,6 +22,7 @@ export default function Page() {
           typeof window.MiniKit !== 'undefined' &&
           (await window.MiniKit.isInstalled?.());
 
+        // Mostrar AuthButton solo si ambas condiciones se cumplen
         if (isWorldApp && miniKitInstalled) {
           setIsWalletAvailable(true);
         } else {
@@ -37,22 +39,26 @@ export default function Page() {
 
   return (
     <main className="w-screen h-screen flex items-center justify-center bg-[#0e0e16] px-4">
-      <div className="w-full max-w-md text-center flex flex-col items-center justify-center">
+      <div className="w-full max-w-md text-center flex flex-col items-center justify-center min-h-full px-4 py-6">
         {/* Solo muestra el título si NO estás en World App */}
         {isWalletAvailable === false && (
           <h1 className="text-white text-2xl font-bold mb-6">Inicia sesión</h1>
         )}
 
-        {/* Estado intermedio */}
+        {/* Estado intermedio de carga */}
         {isWalletAvailable === null && (
           <p className="text-white animate-pulse">Detectando método de inicio de sesión...</p>
         )}
 
-        {/* Dentro de World App y MiniKit listo */}
+        {/* Mostrar componente correspondiente */}
         {isWalletAvailable === true && <AuthButton />}
-
-        {/* En navegador u otra app */}
-        {isWalletAvailable === false && <GoogleButton />}
+        {isWalletAvailable === false && (
+          <>
+            {/* Mensaje debug opcional */}
+            {/* <p className="text-white mb-3">Navegador detectado</p> */}
+            <GoogleButton />
+          </>
+        )}
       </div>
     </main>
   );
