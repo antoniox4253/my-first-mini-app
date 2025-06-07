@@ -1,33 +1,42 @@
 'use client';
 
-import { useMiniKit } from '@worldcoin/minikit-js/minikit-provider';
 import { useEffect, useState } from 'react';
 import { AuthButton } from '@/components/AuthButton';
 import { GoogleButton } from '@/components/GoogleButton';
 
 export default function Page() {
-  const miniKit = useMiniKit(); // evitar desestructurar directamente
-  const [evaluated, setEvaluated] = useState(false);
-  const [showWallet, setShowWallet] = useState(false);
+  const [isWalletAvailable, setIsWalletAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (typeof miniKit.isInstalled === 'boolean') {
-      setShowWallet(miniKit.isInstalled);
-      setEvaluated(true);
-    }
-  }, [miniKit.isInstalled]);
+    // Esperar que el MiniKit esté disponible en window
+    const checkMiniKit = async () => {
+      try {
+        const result =
+          typeof window !== 'undefined' &&
+          typeof (window as any).MiniKit !== 'undefined' &&
+          (await (window as any).MiniKit?.isInstalled?.());
+
+        setIsWalletAvailable(result === true);
+      } catch (error) {
+        console.warn('MiniKit no disponible o falló:', error);
+        setIsWalletAvailable(false);
+      }
+    };
+
+    checkMiniKit();
+  }, []);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#0e0e16] p-4">
       <div className="w-full max-w-md text-center">
         <h1 className="text-white text-2xl font-bold mb-4">Inicia sesión</h1>
 
-        {!evaluated && (
+        {isWalletAvailable === null && (
           <p className="text-white animate-pulse">Detectando método de inicio de sesión...</p>
         )}
 
-        {evaluated && showWallet && <AuthButton />}
-        {evaluated && !showWallet && <GoogleButton />}
+        {isWalletAvailable === true && <AuthButton />}
+        {isWalletAvailable === false && <GoogleButton />}
       </div>
     </main>
   );
