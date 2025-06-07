@@ -8,25 +8,24 @@ export default function Page() {
   const [authMethod, setAuthMethod] = useState<'wallet' | 'google' | 'detecting'>('detecting');
 
   useEffect(() => {
-    const checkEnvironment = async () => {
+    const checkMiniKitPresence = () => {
       try {
-        const isInstalled = await Promise.race([
-          window?.MiniKit?.isInstalled?.() ?? Promise.resolve(false),
-          new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 1000)),
-        ]);
+        const isMiniKitAvailable =
+          typeof window !== 'undefined' && typeof window.MiniKit !== 'undefined';
 
-        if (isInstalled) {
-          setAuthMethod('wallet');
+        if (isMiniKitAvailable) {
+          setAuthMethod('wallet'); // Estás en World App
         } else {
-          setAuthMethod('google');
+          setAuthMethod('google'); // Estás en navegador
         }
       } catch (error) {
-        console.warn('Fallo al verificar entorno:', error);
+        console.warn('Error al verificar MiniKit:', error);
         setAuthMethod('google');
       }
     };
 
-    checkEnvironment();
+    // Espera breve para asegurar que MiniKit cargue
+    setTimeout(checkMiniKitPresence, 300);
   }, []);
 
   return (
