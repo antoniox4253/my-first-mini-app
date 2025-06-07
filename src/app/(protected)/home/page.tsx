@@ -1,14 +1,37 @@
-// app/(protected)/home/page.tsx
+// ✅ Server Component
+import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
+import { connectMongo } from '@/providers/mongo';
+import { User } from '@/models/User';
 import HomeWrapper from '@/components/HomeWrapper';
 
-export default async function Home() {
+
+export default async function HomePage() {
   const session = await auth();
+
+  const email = session?.user?.email;
+  const walletAddress = session?.user?.walletAddress;
+
+  if (!email && !walletAddress) {
+    redirect('/');
+  }
+
+  await connectMongo();
+
+  const user =
+    (walletAddress && (await User.findOne({ walletAddress }))) ||
+    (email && (await User.findOne({ email })));
+
+  if (!user) {
+    redirect('/register');
+  }
 
   return (
     <HomeWrapper
-      username={session?.user.username}
-      profilePictureUrl={session?.user.profilePictureUrl}
+      username={user.username}
+      uuid={user.uuid}
+      email={user.email}
+      profilePictureUrl={session?.user?.profilePictureUrl}
     />
   );
 }

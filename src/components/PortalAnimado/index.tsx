@@ -28,16 +28,15 @@ const PortalAnimado: React.FC<PortalAnimadoProps> = ({
   }, [frames.length, frameDuration]);
 
   return (
+    <div style={{ position: 'relative', width: '100%', height: 120 }}>
     <Image
       src={frames[frameIndex]}
       alt="portal"
-      style={{
-        width,
-        height,
-        objectFit: 'contain',
-        filter: 'drop-shadow(0 0 12px #39aaff)',
-      }}
+      fill
+      sizes="(max-width: 768px) 100vw, 120px"
+      style={{ objectFit: 'contain', imageRendering: 'pixelated' }}
     />
+  </div>
   );
 };
 

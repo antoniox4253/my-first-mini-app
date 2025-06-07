@@ -11,10 +11,16 @@ interface MissionSlot {
   ocupado: boolean;
 }
 
+interface HomeScreenProps {
+  username: string;
+  uuid: string;
+  email: string;
+}
+
 const imgEnMision = '/home/icon-mision-activa.png';
 const portalFrames = ['/home/1.png', '/home/2.png', '/home/3.png'];
-const portalWidth = 80;
-const portalHeight = 120;
+const portalWidth = 70;
+const portalHeight = 100;
 
 const neonStyle: React.CSSProperties = {
   fontFamily: 'monospace',
@@ -25,7 +31,7 @@ const neonStyle: React.CSSProperties = {
   letterSpacing: 1.1,
 };
 
-export default function HomeScreen() {
+export default function HomeScreen({ username, uuid, email }: HomeScreenProps) {
   const router = useRouter();
   const { slots, desbloquearSlot, getTimeLeft } = useMissionSlots();
   const [popup, setPopup] = useState<{ visible: boolean; portalIdx: number | null }>({
@@ -90,45 +96,36 @@ export default function HomeScreen() {
                 maxWidth: 320,
               }}
             >
-              <>
-                <h3
-                  style={{
-                    color: '#ffe94d',
-                    fontWeight: 900,
-                    fontSize: 19,
-                    textAlign: 'center',
-                  }}
-                >
-                  Slot Premium Bloqueado
-                </h3>
-                <p style={{ color: '#ccd7fa', fontSize: 15, textAlign: 'center' }}>
-                  Debes pagar <span style={{ color: '#ffe94d' }}>1500 WLD</span> para desbloquear este slot.
-                </p>
-                <button
-                  onClick={() => pagarYDesbloquearSlot(popup.portalIdx!)}
-                  style={{
-                    background: 'linear-gradient(90deg,#ffe94d 60%,#39aaff 120%)',
-                    color: '#232940',
-                    fontWeight: 700,
-                    padding: '0.6em 1.2em',
-                    borderRadius: 7,
-                  }}
-                >
-                  Pagar y desbloquear
-                </button>
-                <button
-                  onClick={() => setPopup({ visible: false, portalIdx: null })}
-                  style={{
-                    background: 'transparent',
-                    color: '#fff',
-                    border: '1px solid #39aaff',
-                    padding: '0.6em 1.2em',
-                    borderRadius: 7,
-                  }}
-                >
-                  Cancelar
-                </button>
-              </>
+              <h3 style={{ color: '#ffe94d', fontWeight: 900, fontSize: 19, textAlign: 'center' }}>
+                Slot Premium Bloqueado
+              </h3>
+              <p style={{ color: '#ccd7fa', fontSize: 15, textAlign: 'center' }}>
+                Debes pagar <span style={{ color: '#ffe94d' }}>1500 WLD</span> para desbloquear este slot.
+              </p>
+              <button
+                onClick={() => pagarYDesbloquearSlot(popup.portalIdx!)}
+                style={{
+                  background: 'linear-gradient(90deg,#ffe94d 60%,#39aaff 120%)',
+                  color: '#232940',
+                  fontWeight: 700,
+                  padding: '0.6em 1.2em',
+                  borderRadius: 7,
+                }}
+              >
+                Pagar y desbloquear
+              </button>
+              <button
+                onClick={() => setPopup({ visible: false, portalIdx: null })}
+                style={{
+                  background: 'transparent',
+                  color: '#fff',
+                  border: '1px solid #39aaff',
+                  padding: '0.6em 1.2em',
+                  borderRadius: 7,
+                }}
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         )}
@@ -153,7 +150,8 @@ export default function HomeScreen() {
               key={slot.id}
               style={{
                 position: 'relative',
-                width: portalWidth + 150,
+                width: portalWidth + 100,
+                left: -150,
                 height: portalHeight,
                 display: 'flex',
                 alignItems: 'flex-start',

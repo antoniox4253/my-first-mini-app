@@ -6,11 +6,13 @@ import MenuBar from '@/components/MenuBar';
 import HomeScreen from '@/components/HomeScreen';
 
 interface Props {
-  username?: string;
+  username: string;
+  uuid: string;
+  email: string;
   profilePictureUrl?: string;
 }
 
-const HomeWrapper: React.FC<Props> = ({ username, profilePictureUrl }) => {
+const HomeWrapper: React.FC<Props> = ({ username, uuid, email, profilePictureUrl }) => {
   const [selected, setSelected] = useState('home');
 
   return (
@@ -20,9 +22,9 @@ const HomeWrapper: React.FC<Props> = ({ username, profilePictureUrl }) => {
       <div
         className="flex-1 w-full overflow-y-auto px-4"
         style={{ paddingTop: 80, paddingBottom: 80 }}
-        >
-        <HomeScreen />
-        </div>
+      >
+        <HomeScreen username={username} uuid={uuid} email={email} />
+      </div>
 
       <MenuBar selected={selected} onSelect={setSelected} />
     </>
