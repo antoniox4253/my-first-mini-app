@@ -24,24 +24,22 @@ export default function Page() {
       }
     };
 
-    // Espera breve para asegurar que MiniKit cargue
-    setTimeout(checkMiniKitPresence, 300);
+    setTimeout(checkMiniKitPresence, 300); // breve espera para permitir carga
   }, []);
 
   return (
-    <main className="w-screen h-screen flex items-center justify-center bg-[#0e0e16] px-4">
-      <div className="w-full max-w-md text-center flex flex-col items-center justify-center min-h-full px-4 py-6">
-        {authMethod === 'google' && (
-          <h1 className="text-white text-2xl font-bold mb-6">Inicia sesión</h1>
-        )}
+    <div className="w-full h-full flex flex-col items-center justify-center text-center px-4 py-6">
+      {/* Solo se muestra el título si es login por Google */}
+      {authMethod === 'google' && (
+        <h1 className="text-white text-2xl font-bold mb-6">Inicia sesión</h1>
+      )}
 
-        {authMethod === 'detecting' && (
-          <p className="text-white animate-pulse">Detectando método de inicio de sesión...</p>
-        )}
+      {authMethod === 'detecting' && (
+        <p className="text-white animate-pulse">Detectando método de inicio de sesión...</p>
+      )}
 
-        {authMethod === 'wallet' && <AuthButton />}
-        {authMethod === 'google' && <GoogleButton />}
-      </div>
-    </main>
+      {authMethod === 'wallet' && <AuthButton />}
+      {authMethod === 'google' && <GoogleButton />}
+    </div>
   );
 }

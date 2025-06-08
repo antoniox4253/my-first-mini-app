@@ -59,6 +59,7 @@ export default async function RootLayout({
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
+                justifyContent: 'center', // 🆕
               }}
             >
               {children}
