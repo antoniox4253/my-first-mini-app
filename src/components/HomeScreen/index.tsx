@@ -152,7 +152,7 @@ export default function HomeScreen({ username, uuid, email }: HomeScreenProps) {
               style={{
                 position: 'relative',
                 width: portalWidth + 100,
-                left: -40,
+                left: -50,
                 height: portalHeight,
                 display: 'flex',
                 alignItems: 'flex-start',
@@ -185,7 +185,7 @@ export default function HomeScreen({ username, uuid, email }: HomeScreenProps) {
                 disabled={slot.ocupado}
                 style={{
                   position: 'absolute',
-                  left: portalWidth,
+                  left: portalWidth + 50,
                   top: 0,
                   padding: '0.40em 1.0em',
                   background: slot.activo
@@ -196,8 +196,8 @@ export default function HomeScreen({ username, uuid, email }: HomeScreenProps) {
                   color: slot.activo ? '#fff' : '#ffe94d',
                   border: 'none',
                   borderRadius: 9,
-                  fontWeight: 700,
-                  fontSize: 12,
+                  fontWeight: 500,
+                  fontSize: 10,
                   cursor: 'pointer',
                   zIndex: 2,
                 }}
