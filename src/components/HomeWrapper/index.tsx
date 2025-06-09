@@ -26,7 +26,7 @@ const HomeWrapper: React.FC<Props> = ({ username, uuid, email, profilePictureUrl
         <HomeScreen username={username} uuid={uuid} email={email} />
       </div>
 
-      <MenuBar selected={selected} onSelect={setSelected} />
+      <MenuBar selected="home" />
     </>
   );
 };
