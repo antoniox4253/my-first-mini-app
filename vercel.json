@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "cron": [
+    {
+      "path": "/api/store/activar-random",
+      "schedule": "0 12 * * 1",
+      "timezone": "America/Lima"
+    }
+  ],
+  "rewrites": [],
+  "redirects": [],
+  "headers": [],
+  "env": {}
+}

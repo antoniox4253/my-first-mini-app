@@ -196,7 +196,7 @@ export default function HomeScreen({ username, uuid, email }: HomeScreenProps) {
                   color: slot.activo ? '#fff' : '#ffe94d',
                   border: 'none',
                   borderRadius: 9,
-                  fontWeight: 500,
+                  fontWeight: 780,
                   fontSize: 10,
                   cursor: 'pointer',
                   zIndex: 2,
