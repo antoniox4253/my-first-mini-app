@@ -36,10 +36,10 @@ export default function StoreScreen({ username }: { username: string }) {
   const canjes = products.filter(p => p.tipo === 'canje' && p.activo);
 
   return (
-    <>
+    <div className="relative min-h-screen flex flex-col bg-[#181d2a] pt-[72px]">
       <TopBar username={username} />
 
-      <div className="min-h-screen pt-24 pb-32 px-4 bg-[#181d2a] overflow-y-auto">
+      <div className="flex-1 px-4 overflow-y-auto pb-[96px]">
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-4">
           <button
@@ -117,6 +117,6 @@ export default function StoreScreen({ username }: { username: string }) {
       </div>
 
       <MenuBar selected="store" />
-    </>
+    </div>
   );
 }
