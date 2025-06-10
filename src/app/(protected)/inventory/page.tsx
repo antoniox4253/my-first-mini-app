@@ -27,5 +27,6 @@ export default async function InventoryPage() {
     redirect('/register'); // Redirige si el usuario no está registrado
   }
 
-  return <InventoryScreen username={user.username} userId={user._id} />;
+  return <InventoryScreen username={user.username} userId={user._id} wldBalance={user.wld}
+  realmBalance={user.realm}/>;
 }

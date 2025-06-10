@@ -10,14 +10,16 @@ interface Props {
   uuid: string;
   email: string;
   profilePictureUrl?: string;
+  wldBalance: number;  // Pasamos el saldo de WLD
+  realmBalance: number;
 }
 
-const HomeWrapper: React.FC<Props> = ({ username, uuid, email, profilePictureUrl }) => {
+const HomeWrapper: React.FC<Props> = ({ username, uuid, email, profilePictureUrl, wldBalance, realmBalance }) => {
   const [selected, setSelected] = useState('home');
 
   return (
     <>
-      <TopBar username={username} profilePictureUrl={profilePictureUrl} />
+      <TopBar username={username} profilePictureUrl={profilePictureUrl}  wldBalance={wldBalance} realmBalance={realmBalance} />
 
       <div
         className="flex-1 w-full overflow-y-auto px-4"

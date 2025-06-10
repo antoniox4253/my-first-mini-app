@@ -36,6 +36,8 @@ export default async function HomePage() {
       uuid={user.uuid}
       email={user.email}
       profilePictureUrl={session?.user?.profilePictureUrl}
+      wldBalance={user.wld}
+      realmBalance={user.realm}
     />
   );
 }

@@ -8,6 +8,7 @@ import { StoreProduct } from '@/types/storeProduct'; // Tipo de datos para el pr
 import StoreCard from '@/components/StoreCard';
 import TopBar from '@/components/TopBar';
 import MenuBar from '@/components/MenuBar';
+import Modal from '@/components/modal'; // Modal para mensajes
 
 interface StoreScreenProps {
   username: string;
@@ -17,6 +18,9 @@ interface StoreScreenProps {
 export default function StoreScreen({ username, userId }: StoreScreenProps) {
   const [tab, setTab] = useState<'oficial' | 'p2p' | 'canje'>('oficial');
   const [products, setProducts] = useState<StoreProduct[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [balance, setBalance] = useState(8000); // Supuesto saldo del usuario
 
   useEffect(() => {
     async function fetchProducts() {
@@ -42,16 +46,29 @@ export default function StoreScreen({ username, userId }: StoreScreenProps) {
   };
 
   // Función de compra
-  const handleBuy = async (itemCode: string) => {
+  const handleBuy = async (itemCode: string, price: number) => {
     try {
+      if (balance < price) {
+        // Si el saldo es insuficiente
+        setModalMessage('Saldo insuficiente para realizar la compra.');
+        setIsModalOpen(true);
+        return;
+      }
+
+      // Si hay suficiente saldo, procedemos con la compra
       const success = await buyProduct(itemCode, userId); // Se pasa el userId
       if (success) {
-        alert('Producto comprado exitosamente');
+        setBalance(prevBalance => prevBalance - price); // Actualizamos el saldo
+        setModalMessage('Producto comprado exitosamente');
+        setIsModalOpen(true);
       } else {
-        alert('Error al comprar el producto');
+        setModalMessage('Error al comprar el producto');
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error('Error en la compra:', error);
+      setModalMessage('Error al procesar la compra');
+      setIsModalOpen(true);
     }
   };
 
@@ -100,7 +117,7 @@ export default function StoreScreen({ username, userId }: StoreScreenProps) {
                 <p className="text-[#ffe94d] font-bold">{bannerProduct.price} Realm</p>
               </div>
               <button
-                onClick={() => handleBuy(bannerProduct.itemCode)} // Usamos la función handleBuy
+                onClick={() => handleBuy(bannerProduct.itemCode, bannerProduct.price)} // Usamos la función handleBuy
                 className="bg-[#39aaff] text-[#191f33] font-bold px-4 py-2 rounded"
               >
                 Comprar
@@ -111,7 +128,7 @@ export default function StoreScreen({ username, userId }: StoreScreenProps) {
             <h3 className="text-[#39aaff] font-bold mb-2">Consumibles</h3>
             <div className="grid grid-cols-2 gap-4">
               {oficial.map(p => (
-                <StoreCard key={p.itemCode} product={p} onBuy={() => handleBuy(p.itemCode)} />
+                <StoreCard key={p.itemCode} product={p} onBuy={() => handleBuy(p.itemCode, p.price)} />
               ))}
             </div>
           </>
@@ -138,6 +155,13 @@ export default function StoreScreen({ username, userId }: StoreScreenProps) {
       </div>
 
       <MenuBar selected="store" />
+
+      {/* Modal de mensaje emergente */}
+      <Modal
+        message={modalMessage}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 }

@@ -8,10 +8,12 @@ import Image from 'next/image';
 interface TopBarProps {
   username?: string;
   profilePictureUrl?: string;
+  wldBalance: number;  // Pasamos el saldo de WLD
+  realmBalance: number; // Pasamos el saldo de Realm
   onMenuClick?: () => void;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, onMenuClick }) => {
+const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, wldBalance, realmBalance, onMenuClick }) => {
   const router = useRouter();
 
   return (
@@ -38,6 +40,28 @@ const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, onMenuClic
         {profilePictureUrl && (
           <Marble src={profilePictureUrl} className="w-12" />
         )}
+      </div>
+
+      {/* 🟢 Centro: Saldo WLD y Realm */}
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Image
+            src="/top/wld-icon.png" // Imagen del ícono de WLD
+            alt="WLD Icon"
+            width={24}
+            height={24}
+          />
+          <p className="text-sm text-white">{wldBalance} WLD</p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Image
+            src="/top/realm-icon.png" // Imagen del ícono de Realm
+            alt="Realm Icon"
+            width={24}
+            height={24}
+          />
+          <p className="text-sm text-white">{realmBalance} Realm</p>
+        </div>
       </div>
 
       {/* 🟢 Lado derecho: íconos */}

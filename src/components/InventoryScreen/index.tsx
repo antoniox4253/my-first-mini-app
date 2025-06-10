@@ -13,9 +13,11 @@ import MenuBar from '@/components/MenuBar';
 interface InventoryScreenProps {
   username: string;
   userId: string;
+  wldBalance: number;  // Pasamos el saldo de WLD
+  realmBalance: number;
 }
 
-export default function InventoryScreen({ username, userId }: InventoryScreenProps) {
+export default function InventoryScreen({ username, userId, wldBalance, realmBalance  }: InventoryScreenProps) {
   const [tab, setTab] = useState<'personajes' | 'consumibles' | 'canjes'>('personajes');
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
@@ -33,7 +35,7 @@ export default function InventoryScreen({ username, userId }: InventoryScreenPro
 
   return (
     <>
-    <TopBar username={username} />
+    <TopBar username={username} wldBalance={wldBalance} realmBalance={realmBalance} />
 
  <div className="relative min-h-screen flex flex-col bg-[#181d2a] pt-[72px]">
       <h2 className="text-white font-bold text-lg text-center mb-4">Tu Inventario</h2>
