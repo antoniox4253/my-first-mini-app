@@ -30,5 +30,6 @@ export default async function StorePage() {
   }
 
   // Pasa los datos del usuario a StoreScreen
-  return <StoreScreen username={user.username} userId={user._id} />;
+  return <StoreScreen username={user.username} userId={user._id} wldBalance={user.wld}
+  realmBalance={user.realm} />;
 }

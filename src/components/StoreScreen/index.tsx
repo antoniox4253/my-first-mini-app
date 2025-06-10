@@ -13,9 +13,11 @@ import Modal from '@/components/modal'; // Modal para mensajes
 interface StoreScreenProps {
   username: string;
   userId: string;
+  wldBalance: number;  // Pasamos el saldo de WLD
+  realmBalance: number;
 }
 
-export default function StoreScreen({ username, userId }: StoreScreenProps) {
+export default function StoreScreen({ username, userId, wldBalance, realmBalance }: StoreScreenProps) {
   const [tab, setTab] = useState<'oficial' | 'p2p' | 'canje'>('oficial');
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,7 +76,7 @@ export default function StoreScreen({ username, userId }: StoreScreenProps) {
 
   return (
     <>
-      <TopBar username={username} />
+      <TopBar username={username} wldBalance={wldBalance} realmBalance={realmBalance}/>
 
       <div className="min-h-screen pt-24 pb-24 px-4 bg-[#181d2a] overflow-y-auto" style={{ paddingBottom: '96px' }}>
         {/* Tabs */}
