@@ -6,6 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { getUserInventory } from '@/services/inventoryService'; // Función para obtener el inventario
 import { InventoryItem } from '@/types/inventoryItem'; // Tipo de datos para el inventario
 import InventoryCard from '@/components/InventoryCard'; // Componente para mostrar cada ítem
+import TopBar from '@/components/TopBar';
+import MenuBar from '@/components/MenuBar';
+
 
 interface InventoryScreenProps {
   username: string;
@@ -29,7 +32,10 @@ export default function InventoryScreen({ username, userId }: InventoryScreenPro
   const canjes = inventory.filter(item => item.tipo === 'canje');
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#181d2a] pt-[72px]">
+    <>
+    <TopBar username={username} />
+
+ <div className="relative min-h-screen flex flex-col bg-[#181d2a] pt-[72px]">
       <h2 className="text-white font-bold text-lg text-center mb-4">Tu Inventario</h2>
 
       {/* Tabs */}
@@ -95,5 +101,7 @@ export default function InventoryScreen({ username, userId }: InventoryScreenPro
         )}
       </div>
     </div>
+    <MenuBar selected="inventory" />
+    </>
   );
 }

@@ -59,7 +59,7 @@ export default function StoreScreen({ username, userId }: StoreScreenProps) {
     <>
       <TopBar username={username} />
 
-      <div className="min-h-screen pt-24 pb-32 px-4 bg-[#181d2a] overflow-y-auto">
+      <div className="min-h-screen pt-24 pb-24 px-4 bg-[#181d2a] overflow-y-auto" style={{ paddingBottom: '96px' }}>
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-4">
           <button
