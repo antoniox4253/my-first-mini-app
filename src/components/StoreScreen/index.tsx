@@ -3,16 +3,20 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { getStoreProducts } from '@/services/storeService';
-import { StoreProduct } from '@/types/storeProduct';
+import { getStoreProducts, buyProduct } from '@/services/storeService'; // Importa la función buyProduct
+import { StoreProduct } from '@/types/storeProduct'; // Tipo de datos para el producto
 import StoreCard from '@/components/StoreCard';
 import TopBar from '@/components/TopBar';
 import MenuBar from '@/components/MenuBar';
 
-export default function StoreScreen({ username }: { username: string }) {
+interface StoreScreenProps {
+  username: string;
+  userId: string;
+}
+
+export default function StoreScreen({ username, userId }: StoreScreenProps) {
   const [tab, setTab] = useState<'oficial' | 'p2p' | 'canje'>('oficial');
   const [products, setProducts] = useState<StoreProduct[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -22,6 +26,11 @@ export default function StoreScreen({ username }: { username: string }) {
     fetchProducts();
   }, []);
 
+  // Filtrar productos según tipo
+  const oficial = products.filter(p => p.tipo === 'consumible' && p.activo);
+  const canjes = products.filter(p => p.tipo === 'canje' && p.activo);
+
+  // Banner especial para Esfera de Maná
   const bannerProduct = {
     title: 'Esfera de Maná',
     itemCode: 'codesferas',
@@ -32,14 +41,25 @@ export default function StoreScreen({ username }: { username: string }) {
     token: 'realm',
   };
 
-  const oficial = products.filter(p => p.tipo === 'consumible' && p.activo);
-  const canjes = products.filter(p => p.tipo === 'canje' && p.activo);
+  // Función de compra
+  const handleBuy = async (itemCode: string) => {
+    try {
+      const success = await buyProduct(itemCode, userId); // Se pasa el userId
+      if (success) {
+        alert('Producto comprado exitosamente');
+      } else {
+        alert('Error al comprar el producto');
+      }
+    } catch (error) {
+      console.error('Error en la compra:', error);
+    }
+  };
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#181d2a] pt-[72px]">
+    <>
       <TopBar username={username} />
 
-      <div className="flex-1 px-4 overflow-y-auto pb-[96px]">
+      <div className="min-h-screen pt-24 pb-32 px-4 bg-[#181d2a] overflow-y-auto">
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-4">
           <button
@@ -80,17 +100,18 @@ export default function StoreScreen({ username }: { username: string }) {
                 <p className="text-[#ffe94d] font-bold">{bannerProduct.price} Realm</p>
               </div>
               <button
-                onClick={() => alert('Comprar Esfera')}
+                onClick={() => handleBuy(bannerProduct.itemCode)} // Usamos la función handleBuy
                 className="bg-[#39aaff] text-[#191f33] font-bold px-4 py-2 rounded"
               >
                 Comprar
               </button>
             </div>
 
+            {/* Productos Oficiales */}
             <h3 className="text-[#39aaff] font-bold mb-2">Consumibles</h3>
             <div className="grid grid-cols-2 gap-4">
               {oficial.map(p => (
-                <StoreCard key={p.itemCode} product={p} onBuy={() => alert(`Comprar ${p.title}`)} />
+                <StoreCard key={p.itemCode} product={p} onBuy={() => handleBuy(p.itemCode)} />
               ))}
             </div>
           </>
@@ -117,6 +138,6 @@ export default function StoreScreen({ username }: { username: string }) {
       </div>
 
       <MenuBar selected="store" />
-    </div>
+    </>
   );
 }

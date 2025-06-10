@@ -1,12 +1,10 @@
-// src/app/store/page.tsx
-
-import StoreScreen from '@/components/StoreScreen';
+import InventoryScreen from '@/components/InventoryScreen'; // Componente principal para el inventario
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { connectMongo } from '@/providers/mongo';
 import { User } from '@/models/User';
 
-export default async function StorePage() {
+export default async function InventoryPage() {
   const session = await auth();
 
   const email = session?.user?.email;
@@ -29,6 +27,5 @@ export default async function StorePage() {
     redirect('/register'); // Redirige si el usuario no está registrado
   }
 
-  // Pasa los datos del usuario a StoreScreen
-  return <StoreScreen username={user.username} userId={user._id} />;
+  return <InventoryScreen username={user.username} userId={user._id} />;
 }
