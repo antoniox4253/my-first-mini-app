@@ -28,8 +28,7 @@ export default async function StorePage() {
   if (!user) {
     redirect('/register'); // Redirige si el usuario no está registrado
   }
-
+  console.log("vamos por aqui:", user);
   // Pasa los datos del usuario a StoreScreen
-  return <StoreScreen username={user.username} userId={user._id} wldBalance={user.wld}
-  realmBalance={user.realm} />;
+  return <StoreScreen username={user.username} userId={user._id} wldBalance={user.wld} realmBalance={user.realm} />;
 }
