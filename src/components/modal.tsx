@@ -1,4 +1,4 @@
-// src/components/Modal.tsx
+// src/components/modal.tsx
 
 import React from 'react';
 

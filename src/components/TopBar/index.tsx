@@ -41,10 +41,10 @@ const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, wldBalance
           <Marble src={profilePictureUrl} className="w-12" />
         )}
       </div>
-
-      {/* 🟢 Centro: Saldo WLD y Realm */}
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* 🟢 Centro: Saldo WLD y Realm */}
+      <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+        {/* WLD */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Image
             src="/top/wld-icon.png" // Imagen del ícono de WLD
             alt="WLD Icon"
@@ -53,7 +53,9 @@ const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, wldBalance
           />
           <p className="text-sm text-white">{wldBalance} WLD</p>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+        {/* Realm */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Image
             src="/top/realm-icon.png" // Imagen del ícono de Realm
             alt="Realm Icon"
@@ -63,7 +65,6 @@ const TopBar: React.FC<TopBarProps> = ({ username, profilePictureUrl, wldBalance
           <p className="text-sm text-white">{realmBalance} Realm</p>
         </div>
       </div>
-
       {/* 🟢 Lado derecho: íconos */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <Image

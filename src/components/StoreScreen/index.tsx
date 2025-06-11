@@ -17,12 +17,24 @@ interface StoreScreenProps {
   realmBalance: number;
 }
 
+// Tipado del producto del banner
+type BannerProduct = {
+  title: string;
+  itemCode: string;
+  tipo: string;
+  img: string;
+  price: number;
+  btn: string;
+  token: 'realm' | 'wld';  // Aquí especificamos que 'token' solo puede ser 'realm' o 'wld'
+};
+
 export default function StoreScreen({ username, userId, wldBalance, realmBalance }: StoreScreenProps) {
   const [tab, setTab] = useState<'oficial' | 'p2p' | 'canje'>('oficial');
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [balance, setBalance] = useState(8000); // Supuesto saldo del usuario
+  const [wldBalanceState, setWldBalance] = useState(wldBalance); // Estado para el saldo WLD
+  const [realmBalanceState, setRealmBalance] = useState(realmBalance); // Estado para el saldo Realm
 
   useEffect(() => {
     async function fetchProducts() {
@@ -37,30 +49,41 @@ export default function StoreScreen({ username, userId, wldBalance, realmBalance
   const canjes = products.filter(p => p.tipo === 'canje' && p.activo);
 
   // Banner especial para Esfera de Maná
-  const bannerProduct = {
+  const bannerProduct: BannerProduct = {
     title: 'Esfera de Maná',
     itemCode: 'codesferas',
     tipo: 'consumible',
     img: '/store/esfera.png',
     price: 1000,
     btn: 'Comprar',
-    token: 'realm',
+    token: 'realm', // Aquí definimos qué moneda se usa, puede ser 'wld' o 'realm'
   };
 
   // Función de compra
-  const handleBuy = async (itemCode: string, price: number) => {
+  const handleBuy = async (itemCode: string, price: number, token: 'wld' | 'realm') => {
     try {
-      if (balance < price) {
-        // Si el saldo es insuficiente
-        setModalMessage('Saldo insuficiente para realizar la compra.');
+      // Verificamos el saldo correspondiente según el tipo de moneda
+      if (token === 'wld' && wldBalanceState < price) {
+        setModalMessage('Saldo WLD insuficiente para realizar la compra.');
         setIsModalOpen(true);
         return;
       }
 
-      // Si hay suficiente saldo, procedemos con la compra
-      const success = await buyProduct(itemCode, userId); // Se pasa el userId
+      if (token === 'realm' && realmBalanceState < price) {
+        setModalMessage('Saldo Realm insuficiente para realizar la compra.');
+        setIsModalOpen(true);
+        return;
+      }
+
+      // Procedemos con la compra
+      const success = await buyProduct(itemCode, price, token, userId); // Enviamos el token (wld o realm) a la función de compra
       if (success) {
-        setBalance(prevBalance => prevBalance - price); // Actualizamos el saldo
+        // Si la compra es exitosa, actualizamos el saldo correspondiente
+        if (token === 'wld') {
+          setWldBalance(prevBalance => prevBalance - price); // Descontamos WLD
+        } else if (token === 'realm') {
+          setRealmBalance(prevBalance => prevBalance - price); // Descontamos Realm
+        }
         setModalMessage('Producto comprado exitosamente');
         setIsModalOpen(true);
       } else {
@@ -76,7 +99,7 @@ export default function StoreScreen({ username, userId, wldBalance, realmBalance
 
   return (
     <>
-      <TopBar username={username} wldBalance={wldBalance} realmBalance={realmBalance}/>
+      <TopBar username={username} wldBalance={wldBalanceState} realmBalance={realmBalanceState} />
 
       <div className="min-h-screen pt-24 pb-24 px-4 bg-[#181d2a] overflow-y-auto" style={{ paddingBottom: '96px' }}>
         {/* Tabs */}
@@ -119,7 +142,7 @@ export default function StoreScreen({ username, userId, wldBalance, realmBalance
                 <p className="text-[#ffe94d] font-bold">{bannerProduct.price} Realm</p>
               </div>
               <button
-                onClick={() => handleBuy(bannerProduct.itemCode, bannerProduct.price)} // Usamos la función handleBuy
+                onClick={() => handleBuy(bannerProduct.itemCode, bannerProduct.price, bannerProduct.token)} // Usamos la función handleBuy
                 className="bg-[#39aaff] text-[#191f33] font-bold px-4 py-2 rounded"
               >
                 Comprar
@@ -130,7 +153,7 @@ export default function StoreScreen({ username, userId, wldBalance, realmBalance
             <h3 className="text-[#39aaff] font-bold mb-2">Consumibles</h3>
             <div className="grid grid-cols-2 gap-4">
               {oficial.map(p => (
-                <StoreCard key={p.itemCode} product={p} onBuy={() => handleBuy(p.itemCode, p.price)} />
+                <StoreCard key={p.itemCode} product={p} onBuy={() => handleBuy(p.itemCode, p.price, p.token)} />
               ))}
             </div>
           </>
